@@ -1,0 +1,6 @@
+{
+    "name": "MemeList",
+    "version": "0.0.0",
+    "private": true,
+    "main": "./MemeList.js"
+}

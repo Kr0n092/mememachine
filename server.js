@@ -1,37 +1,35 @@
 const fs = require('fs');
 const express = require('express');
-const ReactDOMServer = require('react-dom/server');
-const App = require('./dist/index.server.bundle.js');
 
+const memesRouter = require('./routes/memes');
+const memeRouter = require('./routes/meme');
 const PORT = 3000;
+const next = require('next')
 
-const app = express();
-const template = fs.readFileSync('./index.html', 'utf8'); // stupid simple template.
+const dev = process.env.NODE_ENV !== 'production'
+const app = next({ dev })
+const handle = app.getRequestHandler();
 
-const todos = [
-  { id: 'ed0bcc48-bbbe-5f06-c7c9-2ccb0456ceba', title: 'Wake Up.', completed: true },
-  { id: '42582304-3c6e-311e-7f88-7e3791caf88c', title: 'Grab a brush and put a little makeup.', completed: true },
-  { id: '036af7f9-1181-fb8f-258f-3f06034c020f', title: 'Write a blog post.', completed: false },
-  { id: '1cf63885-5f75-8deb-19dc-9b6765deae6c', title: 'Create a demo repository.', completed: false },
-  { id: '63a871b2-0b6f-4427-9c35-304bc680a4b7', title: '??????', completed: false },
-  { id: '63a871b2-0b6f-4422-9c35-304bc680a4b7', title: 'Profit.', completed: false },
-];
+app.prepare().then(() => {
+  const server = express();
+  server.use('/images', express.static(`${__dirname}/static/images`));
+  server.use('/memes', memesRouter);
+  server.use('/meme', memeRouter);
+  server.use(express.json());
 
-// express.static was only working for some requests, but not others.
-app.use('/dist', express.static(`${__dirname}/dist`));
-app.use('/css', express.static(`${__dirname}/css`));
-
-app.get('*', (req, res) => {
-  const props = { todos };
-
-  App.default(req.url, props).then((reactComponent) => {
-    const result = ReactDOMServer.renderToString(reactComponent);
-    const html = template.replace('{{thing}}', result).replace('{{props}}', JSON.stringify(props));
-    res.send(html);
-    res.end();
+  server.get('/_next/*', (req, res) => {
+    handle(req, res);
   });
-});
 
-app.listen(PORT, () => {
-  console.log(`listening on port: ${PORT}`);
+  server.get('/static/*', (req, res) => {
+    handle(req, res);
+  });
+
+  server.get('/', (req, res) => {
+    handle(req, res)
+  })
+
+  server.listen(PORT, () => {
+    console.log(`listening on port: ${PORT}`);
+  });
 });

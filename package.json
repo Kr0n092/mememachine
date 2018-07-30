@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint ./src",
-    "start": "webpack && node ./server.js",
+    "start": "NODE_ENV=production node server.js",
+    "build": "next build",
+    "dev": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -29,11 +31,16 @@
   },
   "homepage": "https://github.com/gdborton/rrv4-ssr-and-code-splitting#readme",
   "dependencies": {
+    "@zeit/next-css": "^0.2.0",
+    "axios": "^0.18.0",
     "classnames": "^2.2.5",
     "express": "^4.16.2",
+    "history": "^4.7.2",
     "mime": "^2.0.3",
-    "react": "^15.6.2",
-    "react-dom": "^15.6.2",
+    "next": "^6.1.1",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-infinite-scroller": "^1.2.0",
     "react-router": "^4.2.0",
     "react-router-config": "^1.0.0-beta.4",
     "react-router-dom": "^4.2.2"
@@ -51,7 +58,6 @@
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": "^7.4.0",
-    "react-dom": "^15.6.1",
     "webpack": "^3.5.5"
   }
 }
