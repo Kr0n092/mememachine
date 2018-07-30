@@ -9,9 +9,7 @@ memesRouter.get('/', (req, res, next) => {
             content.push({
                 id: i,
                 title: `Image number ${i}`,
-                image: `/images/${i}.jpg`,
-                likes: 0,
-                dislikes: 0
+                image: `/images/${i}.jpg`
             });
         }
     } else if (isNaN(parseInt(req.query.from)) || isNaN(parseInt(req.query.to))) {
@@ -21,9 +19,7 @@ memesRouter.get('/', (req, res, next) => {
             content.push({
                 id: i,
                 title: `Image number ${i}`,
-                image: `/images/${i}.jpg`,
-                likes: 0,
-                dislikes: 0
+                image: `/images/${i}.jpg`
             });
         }
     }

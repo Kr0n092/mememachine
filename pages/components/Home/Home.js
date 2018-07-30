@@ -42,7 +42,7 @@ export default class Home extends React.Component {
                 hasMoreItems: false
             });
         }
-        axios.get("http://localhost:3000/memes/", {
+        axios.get("https://localhost:3000/memes/", {
             params: {
                 from: loadFrom,
                 to: loadUpTo
@@ -63,7 +63,7 @@ export default class Home extends React.Component {
                 isLoading: false
             });       
         })
-        .catch(error => console.log(`error: ${error}`));
+        .catch(error => console.log(`error while fetching meme data`));
     }
 
     componentDidMount() {
@@ -81,7 +81,7 @@ export default class Home extends React.Component {
                 memeList.push(
                     <div key={meme.id}>
                         <img className="img" src={meme.image} alt={meme.title} />
-                        <button onClick={this.favoriteMeme(meme.id)}>
+                        <button onClick={() => this.favoriteMeme(meme.id)}>
                             Mark as favorite
                         </button>
                     </div>
@@ -95,15 +95,15 @@ export default class Home extends React.Component {
         if (!id) {
             return;
         }
-        axios.get('http://localhost:3000/favorite', {
+        axios.get('https://localhost:3000/favorite', {
             params: {
                 id: id
             }
         })
         .then(res => {
-            console.log(`Status is ${res.status} ${res.statusText}`);
+            console.log(`Status is ${res.status} ${res.statusText}`); //TODO display popup
         })
-        .catch(error => console.log(error));
+        .catch(error => `error while favoriting meme`);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
