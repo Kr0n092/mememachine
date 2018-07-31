@@ -6,8 +6,10 @@
   "scripts": {
     "start": "NODE_ENV=production NODE_TLS_REJECT_UNAUTHORIZED=0 node server.js",
     "build": "next build",
-    "dev": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rm -rf .next",
+    "dev": "NODE_ENV=development NODE_TLS_REJECT_UNAUTHORIZED=0 node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prod": "npm run clean && npm run build && npm run start"
   },
   "repository": {
     "type": "git",
@@ -33,6 +35,8 @@
     "@zeit/next-css": "^0.2.0",
     "axios": "^0.18.0",
     "classnames": "^2.2.5",
+    "compression": "^1.7.3",
+    "cors": "^2.8.4",
     "express": "^4.16.2",
     "history": "^4.7.2",
     "mime": "^2.0.3",

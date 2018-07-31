@@ -1,7 +1,7 @@
 import React from "react";
 import Dropzone from "react-dropzone";
 
-class UploadMeme extends React.Component {
+export default class UploadMeme extends React.Component {
     constructor() {
         super()
         this.state = {
@@ -94,5 +94,3 @@ class UploadMeme extends React.Component {
         );
       }
 }
-
-export default UploadMeme;

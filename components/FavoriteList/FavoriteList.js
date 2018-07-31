@@ -1,6 +1,5 @@
 import React from 'react';
-import Head from "next/head";
-import PropTypes from 'prop-types';
+import axios from "axios";
 import InfiniteScroll from "react-infinite-scroller";
 
 export default class FavoriteList extends React.Component {
@@ -10,10 +9,9 @@ export default class FavoriteList extends React.Component {
         hasMoreItems: true,
         isLoading: false,
         noMoreMemes: false,
-        loader: <div className="loader">Loading ...</div>
+        loader: <div key={0} className="loader">Loading ...</div>
 
     }
-    static contextTypes = { fetch: PropTypes.func.isRequired };
 
     fetchData(page) {
         const self = this;
@@ -21,19 +19,22 @@ export default class FavoriteList extends React.Component {
             isLoading: true
         });
         
-        const url = `favorites?id=${self.state.totalLoaded}`;
-        
-        this.context.fetch(url, { method: 'GET' })
+        axios.get('https://localhost:3000/favorites/', {
+            params: {
+                id: self.state.totalLoaded
+            },
+            responseType: 'blob'
+        })
         .then(res => { 
             if (res.status !== 200) {
-                return "";
+                return undefined;
             } else { 
-                return res.blob()
+                return res.data
             }
         })
         .then(result => {
             if (!result) {
-                self.setState({ isLoading: false, noMoreMemes: true, loader: <div className="loader">No more favorites</div> });
+                self.setState({ isLoading: false, noMoreMemes: true, hasMoreItems: false, loader: <div keuy={0} className="loader">No more favorites</div> });
             } else {
                 const memeURL = URL.createObjectURL(result);
                 const memes = self.state.memes;
@@ -43,7 +44,13 @@ export default class FavoriteList extends React.Component {
                 self.setState({ isLoading: false, hasMoreItems: false, memes: memes, totalLoaded: totalLoaded });
             }
         })
-        .catch(error => console.log(`error: ${error}`));
+        .catch(error => {
+            console.log(`error: ${error}`);
+            self.setState({
+                isLoading: false, noMoreMemes: true, hasMoreItems: false, loader: <div key={0} className="loader">No more favorites</div>
+            });
+            console.log(this.state.hasMoreItems);
+        });
 
     }
 
@@ -55,20 +62,18 @@ export default class FavoriteList extends React.Component {
 
     render() {
         const loader = this.state.loader;
-        let tiles;
+        const tiles = [];
         if(this.state.memes) {
-            tiles = this.state.memes.map(memeURL => {
-                return (
-                    <img src={memeURL} />
+            this.state.memes.map(memeURL => {
+                tiles.push(
+                    <div key={memeURL}>
+                        <img src={memeURL} />
+                    </div>
                 );
             });
         }
         return (
             <div>
-                <Head>
-                    <link rel="preload" href="/static/styles/FavoriteList.css" as="style" />
-                    <link rel="stylesheet" href="/static/styles/FavoriteList.css" />
-                </Head>
                 <InfiniteScroll
                     pageStart={0}
                     loadMore={this.fetchData.bind(this)}

@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import Link from '../Link';
+import Link from 'next/link';
 import Head from "next/head";
 
 //import UploadModal from '../UploadModal';
@@ -24,8 +24,11 @@ class Navigation extends React.Component {
         {/* <Link to="#">
           <UploadModal/>
         </Link> */}
-        <Link className="link" to="/favorites">
-          Favorites
+        <Link className="link" href="/favorites" prefetch>
+          <a>Favorites</a>
+        </Link>
+        <Link className="link" href="/upload">
+          <a>Upload a meme</a>
         </Link>
       </div>
     );

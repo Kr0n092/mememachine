@@ -1,5 +1,15 @@
 "use strict"
-const urlsToCache = ["/", "/static/styles/Layout.css", "/static/styles/Header.css", "/static/styles/index.css", "/static/styles/Navigation.css", "/static/styles/variables.css"];
+const urlsToCache = [
+    "/", 
+    "/static/styles/Layout.css", 
+    "/static/styles/Header.css", 
+    "/static/styles/index.css", 
+    "/static/styles/Navigation.css", 
+    "/static/styles/variables.css", 
+    "https://fonts.gstatic.com/s/robotocondensed/v16/ieVl2ZhZI2eCN5jzbjEETS9weq8-19K7DQ.woff2",
+    "https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css",
+    "https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+];
 for (let i = 1; i <= 10; i++) {
     urlsToCache.push(`/images/${i}.jpg`);
 }
@@ -32,7 +42,19 @@ self.addEventListener('fetch', function(event) {
 
     // url.split('/') = ['https:', '', domain, importantURLPart, ...]
     const importantURLPart = event.request.url.split('/')[3];
-    if (importantURLPart.includes('favorites') && event.request.method === 'GET') { // Put this url first since it also matches 'favorite'
+    if (importantURLPart === 'favorites' && event.request.method === 'GET') { // Put this url first since it also matches 'favorite'
+        caches.open('perfcache').then(cache => {
+            cache
+            .match(event.request)
+            .then(cachedResponse => {
+                if (!cachedResponse) {
+                    fetch(event.request)
+                    .then(response => {
+                        cache.put(event.request.clone(), response.clone());
+                    });
+                }
+            });
+        })
         event.respondWith(
             caches.open('favorite-cache').then(cache => {
                 return cache.keys().then(keys => {
@@ -97,7 +119,7 @@ self.addEventListener('fetch', function(event) {
                 return new Response("", { status: 500, statusText: "Could not open cache" });
             })
         );
-    } else if (importantURLPart !== "_next") {
+    } else {
         event.respondWith(
             caches.open('perfcache').then(function(cache) {
                 return cache.match(event.request).then(function (response) {

@@ -1,7 +1,8 @@
 import React from "react";
-import Home from "./components/Home";
+import Home from "../components/Home";
 import axios from "axios";
 import Head from "next/head";
+import MainLayout from "../layouts/main";
 
 export default class extends React.Component {
     constructor(props) {
@@ -35,9 +36,12 @@ export default class extends React.Component {
         return (
             <div>
                 <Head>
-                    <link ref="preload" href="/service-worker.js" as="script" />
+                    <link rel="preload" href="/static/styles/index.css" as="style" />
+                    <link rel="stylesheet" href="/static/styles/index.css" />
                 </Head>
-                <Home {...this.props} />
+                <MainLayout>
+                    <Home {...this.props} />
+                </MainLayout>
             </div>
         )
     }

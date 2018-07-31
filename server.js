@@ -2,6 +2,9 @@ const path = require("path");
 const fs = require('fs');
 const express = require('express');
 const spdy = require("spdy");
+const compression = require("compression");
+const cors = require("cors");
+
 const memesRouter = require('./routes/memes');
 const memeRouter = require('./routes/meme');
 const PORT = 3000;
@@ -11,8 +14,20 @@ const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler();
 
+let mainFile = "";
+let mainScript = "";
+if (!dev) {
+  let scripts = [];
+  scripts = fs.readdirSync(path.join(__dirname, '.next', 'static', 'commons'));
+  mainScript = scripts.map(script => {
+    if (script.includes("main")) return script;
+  });
+  mainFile = fs.readFileSync(path.join(__dirname, '.next', 'static', 'commons', `${mainScript}`));
+}
 app.prepare().then(() => {
   const server = express();
+  server.use(cors());
+  server.use(compression());
   server.use('/images', express.static(`${__dirname}/static/images`));
   server.use('/memes', memesRouter);
   server.use('/meme', memeRouter);
@@ -29,15 +44,32 @@ app.prepare().then(() => {
   });
 
   server.get('/', (req, res) => {
-    handle(req, res)
+    if (!dev && res.push) {
+      res.push(`/_next/static/commons/${mainScript}`, {req: {'accept': '**/*'}, res: {'content-type': 'application/javascript'}}, (error, stream) => {
+        if (error) {
+          console.log(error);
+          return;
+        }
+        stream.end(mainFile);
+      });
+    }
+    handle(req, res);
   });
 
-  const options = {
-    key: fs.readFileSync(path.resolve(__dirname, './certs', 'key.pem')),
-    cert: fs.readFileSync(path.resolve(__dirname, './certs', 'cert.pem'))
-  };
+  if (!dev) {
+    const options = {
+      key: fs.readFileSync(path.resolve(__dirname, './certs', 'key.pem')),
+      cert: fs.readFileSync(path.resolve(__dirname, './certs', 'cert.pem'))
+    };
 
-  const spdyServer = spdy.createServer(options, server);
-  spdyServer.listen(PORT);
-  console.log(`The server is running at https://localhost:${PORT}/`);
+    spdy.createServer(options, server).listen(PORT, (err) => {
+      if (err) throw new Error(err);
+      console.log(`The server is running at https://localhost:${PORT}/`);
+    });
+  } else {
+    server.listen(PORT, (error) => {
+      if (error) throw new Error(error);
+      console.log(`The server is running at https://localhost:${PORT}/`);
+    })
+  }
 });

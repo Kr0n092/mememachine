@@ -1,7 +1,6 @@
 import React from 'react';
 import axios from "axios";
-import InfiniteScroll from "react-infinite-scroller";
-import Head from 'next/head';
+import InfiniteScroll from 'react-infinite-scroller';
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -79,13 +78,16 @@ export default class Home extends React.Component {
         memes.map(meme => {
             if (meme) {
                 memeList.push(
+                    <tr>
                     <div key={meme.id}>
-                        <img className="img" src={meme.image} alt={meme.title} />
-                        <button onClick={() => this.favoriteMeme(meme.id)}>
+                        <td><img src={meme.image} alt={meme.title} /></td>
+                        <td><button onClick={() => this.favoriteMeme(meme.id)}>
                             Mark as favorite
                         </button>
+                        </td>
                     </div>
-                )
+                    </tr>
+                );
             }
         });
         return memeList;
@@ -117,18 +119,16 @@ export default class Home extends React.Component {
         const loader = <div className="loader" key={0}>Loading ...</div>;
         return (
             <div>
-                <Head>
-                    <link rel="preload" href="/static/styles/index.css" as="style" />
-                    <link rel="stylesheet" href="/static/styles/index.css" />
-                </Head>
                 <h1>Memes</h1>
-                <InfiniteScroll
-                    loadMore={this.fetchData.bind(this)}
-                    hasMore={this.state.hasMoreItems}
-                    isLoading={this.state.isLoading}
-                    loader={loader}>
-                    {memes}
-                </InfiniteScroll>
+                <table id="wrapper">
+                    <InfiniteScroll
+                        loadMore={this.fetchData.bind(this)}
+                        hasMore={this.state.hasMoreItems}
+                        isLoading={this.state.isLoading}
+                        loader={loader}>
+                        {memes}
+                    </InfiniteScroll>
+                </table>
             </div>
         )
     }

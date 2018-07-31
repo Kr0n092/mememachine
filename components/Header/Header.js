@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import Link from '../Link';
+import Link from 'next/link';
 import Head from "next/head";
 import Navigation from "../Navigation";
 
@@ -23,8 +23,8 @@ class Header extends React.Component {
                         <link rel="stylesheet" href="/static/styles/Header.css" />
                     </Head>
                     <Navigation />
-                    <Link className="brand" to="/">
-                        <span className="brandTxt">MemeMachine</span>
+                    <Link className="brand" href="/">
+                        <a><span className="brandTxt">MemeMachine</span></a>
                     </Link>
                 </div>
             </div>
