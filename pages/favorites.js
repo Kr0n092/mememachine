@@ -2,6 +2,7 @@ import React from "react";
 import FavoriteList from "../components/FavoriteList";
 import Head from "next/head";
 import MainLayout from "../layouts/main";
+import ScrollButtons from "../components/ScrollButtons/ScrollButtons";
 
 export default class extends React.Component {
 
@@ -13,6 +14,7 @@ export default class extends React.Component {
                     <link rel="stylesheet" href="/static/styles/FavoriteList.css" />
                 </Head>
                 <MainLayout>
+                    <ScrollButtons />
                     <FavoriteList />
                 </MainLayout>
             </div>

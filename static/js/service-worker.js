@@ -13,7 +13,6 @@ const urlsToCache = [
 for (let i = 1; i <= 10; i++) {
     urlsToCache.push(`/images/${i}.jpg`);
 }
-console.log(urlsToCache);
 self.addEventListener("install", event => {
     event.waitUntil(
         caches

@@ -3,6 +3,7 @@ import Home from "../components/Home";
 import axios from "axios";
 import Head from "next/head";
 import MainLayout from "../layouts/main";
+import ScrollButtons from "../components/ScrollButtons";
 
 export default class extends React.Component {
     constructor(props) {
@@ -40,6 +41,7 @@ export default class extends React.Component {
                     <link rel="stylesheet" href="/static/styles/index.css" />
                 </Head>
                 <MainLayout>
+                    <ScrollButtons />
                     <Home {...this.props} />
                 </MainLayout>
             </div>
