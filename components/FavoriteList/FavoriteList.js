@@ -19,7 +19,7 @@ export default class FavoriteList extends React.Component {
             isLoading: true
         });
         
-        axios.get('https://localhost:3000/favorites/', {
+        axios.get('http://localhost:3000/favorites/', {
             params: {
                 id: self.state.totalLoaded
             },

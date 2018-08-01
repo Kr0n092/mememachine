@@ -11,7 +11,7 @@ export default class extends React.Component {
     }
 
     static async getInitialProps({ req }) {
-        const res = await axios.get("https://localhost:3000/memes/", {
+        const res = await axios.get("http://localhost:3000/memes/", {
             params: {
                 from: 1,
                 to: 11
@@ -37,7 +37,6 @@ export default class extends React.Component {
         return (
             <div>
                 <Head>
-                    <link rel="preload" href="/static/styles/index.css" as="style" />
                     <link rel="stylesheet" href="/static/styles/index.css" />
                 </Head>
                 <MainLayout>

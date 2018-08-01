@@ -41,7 +41,7 @@ export default class Home extends React.Component {
                 hasMoreItems: false
             });
         }
-        axios.get("https://localhost:3000/memes/", {
+        axios.get("http://localhost:3000/memes/", {
             params: {
                 from: loadFrom,
                 to: loadUpTo
@@ -97,7 +97,7 @@ export default class Home extends React.Component {
         if (!id) {
             return;
         }
-        axios.get('https://localhost:3000/favorite', {
+        axios.get('http://localhost:3000/favorite', {
             params: {
                 id: id
             }

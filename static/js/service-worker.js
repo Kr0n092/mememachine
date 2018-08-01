@@ -1,12 +1,11 @@
 "use strict"
-const urlsToCache = [
-    "/", 
+const urlsToCache = [ 
     "/static/styles/Layout.css", 
     "/static/styles/Header.css", 
     "/static/styles/index.css", 
     "/static/styles/Navigation.css", 
     "/static/styles/variables.css", 
-    "https://fonts.gstatic.com/s/robotocondensed/v16/ieVl2ZhZI2eCN5jzbjEETS9weq8-19K7DQ.woff2",
+    "https://fonts.gstatic.com/s/hanaleifill/v6/fC1mPYtObGbfyQznIaQzPQi8UAjA.woff2",
     "https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css",
     "https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
 ];
@@ -34,13 +33,15 @@ self.addEventListener('activate', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
-    // If the request is not GET or POST, let the network handle things,
+    // If the request is not GET, let the network handle things,
     if (event.request.method !== 'GET') {
         return;
     }
 
     // url.split('/') = ['https:', '', domain, importantURLPart, ...]
     const importantURLPart = event.request.url.split('/')[3];
+    console.log(event.request.url.split('/'));
+    if (importantURLPart === "") console.log("empty");
     if (importantURLPart === 'favorites' && event.request.method === 'GET') { // Put this url first since it also matches 'favorite'
         caches.open('perfcache').then(cache => {
             cache
@@ -120,14 +121,46 @@ self.addEventListener('fetch', function(event) {
         );
     } else {
         event.respondWith(
-            caches.open('perfcache').then(function(cache) {
-                return cache.match(event.request).then(function (response) {
-                    return response || fetch(event.request).then(function(response) {
-                        cache.put(event.request, response.clone());
-                        return response;
-                    });
-                });
+            fromNetwork(event.request, 400)
+            .then(response => {
+                return caches.open('perfcache')
+                .then(cache => {
+                    cache.put(event.request.clone(), response.clone());
+                    return response;
+                })
             })
+            .catch(() => {
+                console.log("test");
+                return fromCache(event.request, "perfcache");
+            })
+            // caches.open('perfcache').then(cache => {
+            //     return cache.match(event.request).then(response => {
+            //         return response || fetch(event.request).then(response => {
+            //             cache.put(event.request, response.clone());
+            //             return response;
+            //         });
+            //     });
+            // })
         );
     }
-  });
+});
+
+function fromNetwork(request, timeout) {
+    return new Promise((fulfill, reject) => {
+        const timeoutId = setTimeout(reject, timeout);
+
+        fetch(request)
+        .then(response => {
+            clearTimeout(timeoutId);
+            fulfill(response);
+        }, reject);
+    });
+}
+
+function fromCache(request, cacheName) {
+    return caches.open(cacheName).then(cache => {
+        return cache.match(request).then(matching => {
+            return matching || Promise.reject('no-match');
+        });
+    });
+}
