@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "NODE_ENV=production NODE_TLS_REJECT_UNAUTHORIZED=0 node server.js",
-    "build": "next build",
+    "start:dev": "NODE_ENV=development NODE_TLS_REJECT_UNAUTHORIZED=0 node server.js",
+    "build": "NODE_ENV=production next build",
+    "build:dev": "NODE_ENV=development next build",
     "clean": "rm -rf .next",
-    "dev": "NODE_ENV=development NODE_TLS_REJECT_UNAUTHORIZED=0 node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npm run clean && npm run build:dev && npm run start:dev",
     "prod": "npm run clean && npm run build && npm run start"
   },
   "repository": {
@@ -32,11 +33,11 @@
   },
   "homepage": "https://github.com/gdborton/rrv4-ssr-and-code-splitting#readme",
   "dependencies": {
-    "@zeit/next-css": "^0.2.0",
     "axios": "^0.18.0",
     "classnames": "^2.2.5",
     "compression": "^1.7.3",
     "cors": "^2.8.4",
+    "dotenv": "^6.0.0",
     "express": "^4.16.2",
     "history": "^4.7.2",
     "mime": "^2.0.3",
@@ -45,10 +46,12 @@
     "react-dom": "^16.4.1",
     "react-dropzone": "^4.2.13",
     "react-infinite-scroller": "^1.2.0",
+    "react-no-ssr": "^1.1.0",
     "react-router": "^4.2.0",
     "react-router-config": "^1.0.0-beta.4",
     "react-router-dom": "^4.2.2",
-    "spdy": "^3.4.7"
+    "spdy": "^3.4.7",
+    "sqlite3": "^4.0.2"
   },
   "devDependencies": {
     "webpack": "^4.16.3"

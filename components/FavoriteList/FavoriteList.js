@@ -1,16 +1,21 @@
 import React from 'react';
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroller";
-
+import getConfig from "next/config";
 export default class FavoriteList extends React.Component {
-    state = {
-        memes: [],
-        totalLoaded: 0,
-        hasMoreItems: true,
-        isLoading: false,
-        noMoreMemes: false,
-        loader: <div key={0} className="loader">Loading ...</div>
 
+    constructor(props) {
+        super(props);
+        const { serverRuntimeConfig, publicRuntimeConfig } = getConfig();
+        this.state = {
+            memes: [],
+            totalLoaded: 0,
+            hasMoreItems: true,
+            isLoading: false,
+            noMoreMemes: false,
+            loader: <div key={0} className="loader">Loading ...</div>,
+            config: publicRuntimeConfig
+        }
     }
 
     fetchData(page) {
@@ -18,8 +23,8 @@ export default class FavoriteList extends React.Component {
         self.setState({
             isLoading: true
         });
-        
-        axios.get('http://localhost:3000/favorites/', {
+        const scheme = !self.state.config.USE_HTTPS || !self.state.config.USE_HTTP2 ? "http": "https";
+        axios.get(`${scheme}://localhost:${self.state.config.PORT}/favorites/`, {
             params: {
                 id: self.state.totalLoaded
             },
@@ -29,12 +34,12 @@ export default class FavoriteList extends React.Component {
             if (res.status !== 200) {
                 return undefined;
             } else { 
-                return res.data
+                return res.data;
             }
         })
         .then(result => {
             if (!result) {
-                self.setState({ isLoading: false, noMoreMemes: true, hasMoreItems: false, loader: <div keuy={0} className="loader">No more favorites</div> });
+                self.setState({ isLoading: false, noMoreMemes: true, hasMoreItems: false, loader: <div key={0} className="loader">No more favorites</div> });
             } else {
                 const memeURL = URL.createObjectURL(result);
                 const memes = self.state.memes;
@@ -49,7 +54,6 @@ export default class FavoriteList extends React.Component {
             self.setState({
                 isLoading: false, noMoreMemes: true, hasMoreItems: false, loader: <div key={0} className="loader">No more favorites</div>
             });
-            console.log(this.state.hasMoreItems);
         });
 
     }

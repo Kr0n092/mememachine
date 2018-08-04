@@ -1,10 +1,21 @@
 import React from 'react';
 import Head from "next/head";
 import NavBar from '../NavBar';
+import getConfig from "next/config";
 
 
 export default class Meta extends React.Component {
+
+  constructor(props) {
+    super(props);
+  }
+  getLinks(resourceHint, url, type) {
+    let rel = "stylesheet";
+    
+  }
   render() {
+    const { serverRuntimeConfig, publicRuntimeConfig } = getConfig();
+    const rel = publicRuntimeConfig.USE_PRELOAD ? "preload" : publicRuntimeConfig.USE_PREFETCH ? "prefetch" : undefined;
     return (
       <div>
         <Head>
