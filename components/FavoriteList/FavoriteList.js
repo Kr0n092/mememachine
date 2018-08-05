@@ -23,7 +23,7 @@ export default class FavoriteList extends React.Component {
         self.setState({
             isLoading: true
         });
-        const scheme = !self.state.config.USE_HTTPS || !self.state.config.USE_HTTP2 ? "http": "https";
+        const scheme = self.state.config.USE_HTTPS || self.state.config.USE_HTTP2 ? "https": "http";
         axios.get(`${scheme}://localhost:${self.state.config.PORT}/favorites/`, {
             params: {
                 id: self.state.totalLoaded

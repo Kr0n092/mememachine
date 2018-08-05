@@ -42,7 +42,7 @@ export default class Home extends React.Component {
         const limits = this.getLimits(page);
         let loadFrom = limits.lower;
         let loadUpTo = limits.upper;
-        const scheme = !self.state.config.USE_HTTPS || !self.state.config.USE_HTTP2 ? "http": "https";
+        const scheme = self.state.config.USE_HTTPS || self.state.config.USE_HTTP2 ? "https": "http";
         const url = `${scheme}://localhost:${self.state.config.PORT}/memes`;
         let params = {
             from: loadFrom,
@@ -124,7 +124,7 @@ export default class Home extends React.Component {
         if (!id) {
             return;
         }
-        const scheme = !self.state.config.USE_HTTPS || !self.state.config.USE_HTTP2 ? "http": "https";
+        const scheme = self.state.config.USE_HTTPS || self.state.config.USE_HTTP2 ? "https": "http";
         axios.get(`${scheme}://localhost:${self.state.config.PORT}/favorite`, {
             params: {
                 id: id

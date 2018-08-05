@@ -3,7 +3,8 @@ const sqlite = require("sqlite3").verbose();
 
 const db = new sqlite.Database('favorites.db');
 db.serialize(() => {
-    db.run('CREATE TABLE IF NOT EXISTS favorites (id INTEGER)');
+    db.run('DROP TABLE IF EXISTS favorites');
+    db.run('CREATE TABLE favorites (id INTEGER)');
 });
 
 favoriteRouter.get('/', (req, res, next) => {
